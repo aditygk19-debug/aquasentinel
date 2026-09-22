@@ -1,20 +1,30 @@
-﻿# Python
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.pytest_cache/
 .ipynb_checkpoints/
-.venv/
+
+# Virtual environments
 venv/
+env/
+.venv/
 
-# Models and large data (don't push)
-*.pt
-*.pth
-*.ckpt
-data/*.tif
-data/*.tiff
-
-# OS
+# OS / editor
 .DS_Store
 Thumbs.db
-
-# VS Code
 .vscode/
+.idea/
+
+# Logs
+*.log
+streamlit.log
+
+# Large data / local-only files
+data/*.png
+data/*.jpg
+data/*.jpeg
+data/*.tif
+data/*.tiff
+detect/checkpoints/*.pt
+!detect/checkpoints/efficientnet_zenodo_best.pt
