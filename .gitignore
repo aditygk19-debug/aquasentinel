@@ -1,0 +1,20 @@
+﻿# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Models and large data (don't push)
+*.pt
+*.pth
+*.ckpt
+data/*.tif
+data/*.tiff
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

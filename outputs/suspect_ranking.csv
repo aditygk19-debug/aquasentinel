@@ -1,0 +1,9 @@
+rank,mmsi,name,vessel_type,score,dark_vessel_flag,reason_codes
+1,TRUE-620462,MV Culprit (synthetic),tanker,65.0,False,within 0.0 km of origin region (radius 8.0 km) | track passes within 0.0h of release window | vessel type: tanker (higher prior for oil cargo)
+2,DARK-847042,Unnamed (AIS gap),unknown,35.7,True,AIS signal gap spanning the release window (dark-vessel candidate)
+3,DECOY-110614,Vessel 6,fishing,24.7,False,within 2.6 km of origin region (radius 8.0 km)
+4,DECOY-817361,Vessel 2,cargo,19.5,False,within 5.6 km of origin region (radius 8.0 km)
+5,DECOY-293777,Vessel 4,other,18.6,False,within 6.9 km of origin region (radius 8.0 km)
+6,DECOY-798116,Vessel 1,tanker,15.0,False,vessel type: tanker (higher prior for oil cargo)
+7,DECOY-554092,Vessel 3,cargo,10.5,False,
+8,DECOY-519584,Vessel 5,other,6.0,False,
