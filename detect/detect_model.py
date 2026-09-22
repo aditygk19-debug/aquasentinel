@@ -57,6 +57,11 @@ def load_model(checkpoint_path=None, device="cpu"):
     if checkpoint_path and os.path.exists(checkpoint_path):
         state = torch.load(checkpoint_path, map_location=device)
         state_dict = state.get("state_dict", state) if isinstance(state, dict) else state
+        # The training script saved weights with a "backbone." prefix (the
+        # EfficientNet was wrapped in a container module). Strip it to match
+        # the bare torchvision model we rebuild here.
+        if isinstance(state_dict, dict) and any(k.startswith("backbone.") for k in state_dict):
+            state_dict = {k[len("backbone."):]: v for k, v in state_dict.items()}
         model.load_state_dict(state_dict)
         print(f"Loaded trained weights from {checkpoint_path}")
     else:
