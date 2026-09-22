@@ -114,15 +114,42 @@ def main():
                               r["dark_vessel_flag"], " | ".join(r["reasons"])])
     print(f"[4/4] Wrote ranked suspect table -> {csv_path}")
 
-    fig, ax = plt.subplots(figsize=(8, 5))
+    plt.rcParams.update({
+        "font.size": 12,
+        "axes.titlesize": 15,
+        "axes.labelsize": 13,
+        "legend.fontsize": 11,
+    })
+    fig, ax = plt.subplots(figsize=(11, 7))
     names = [f"{r['mmsi']}\n({r['vessel_type']}{', DARK' if r['dark_vessel_flag'] else ''})"
               for r in ranked]
     scores = [r["score"] for r in ranked]
     colors = ["crimson" if r["mmsi"] == true_mmsi else ("darkorange" if r["dark_vessel_flag"] else "steelblue")
               for r in ranked]
-    ax.barh(names[::-1], scores[::-1], color=colors[::-1])
-    ax.set_xlabel("Suspicion score (0-100)")
-    ax.set_title("Ranked Vessel Suspects — Evidence Scoring")
+    ax.barh(names[::-1], scores[::-1], color=colors[::-1], height=0.72)
+
+    # annotate the true culprit
+    for i, r in enumerate(ranked):
+        if r["mmsi"] == true_mmsi:
+            y_pos = len(ranked) - 1 - i
+            ax.annotate("← matches ground truth", xy=(r["score"], y_pos),
+                        xytext=(r["score"] + 2, y_pos),
+                        fontsize=11, color="crimson", va="center", fontweight="bold")
+            break
+
+    # legend explaining the colors
+    from matplotlib.patches import Patch
+    legend_handles = [
+        Patch(color="crimson", label="Ground-truth culprit"),
+        Patch(color="darkorange", label="Dark vessel (AIS gap)"),
+        Patch(color="steelblue", label="Normal AIS traffic"),
+    ]
+    ax.legend(handles=legend_handles, loc="lower right", framealpha=0.9)
+
+    ax.set_xlabel("Suspicion score (0–100)")
+    ax.set_title("Ranked Vessel Suspects — Weighted Evidence Scoring\n"
+                 "(proximity + timing + trajectory + AIS gap + vessel type)")
+    ax.set_xlim(0, max(scores) * 1.25)
     fig.tight_layout()
     fig.savefig(os.path.join(out_dir, "suspect_ranking.png"), dpi=150)
     print(f"       Wrote suspect ranking chart -> {os.path.join(out_dir, 'suspect_ranking.png')}")
