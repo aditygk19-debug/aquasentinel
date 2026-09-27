@@ -26,6 +26,10 @@ with st.sidebar:
     hours = st.slider("Hours since release (hindcast window)", 6, 24, 18)
     n_members = st.slider("Ensemble members", 10, 50, 25)
     seed = st.number_input("Random seed", value=42, step=1)
+    uploaded_scene = st.file_uploader("Upload SAR scene (optional)",
+                                       type=["png", "jpg", "jpeg"])
+    if uploaded_scene is not None:
+        st.caption("Custom upload overrides the bundled sample scene.")
     run_btn = st.button("▶ Run pipeline", type="primary")
     st.divider()
     st.caption("**Primary user:** Coast Guard / pollution-control duty officer")
@@ -36,6 +40,15 @@ if "data" not in st.session_state:
     st.session_state.data = None
 
 if run_btn or st.session_state.data is None:
+    if uploaded_scene is not None:
+        # Save uploaded file as the scene the pipeline will read
+        import os as _os
+        _scene_path = _os.path.join(_HERE, '..', 'data', 'sample_scene.png')
+        _os.makedirs(_os.path.dirname(_scene_path), exist_ok=True)
+        with open(_scene_path, 'wb') as f:
+            f.write(uploaded_scene.getbuffer())
+        st.sidebar.success("Uploaded scene saved.")
+
     with st.spinner("Running detection → ensemble hindcast → AIS attribution ..."):
         st.session_state.data = run_pipeline(
             hours_since_release=hours, n_members=n_members, seed=int(seed))
@@ -45,7 +58,16 @@ data = st.session_state.data
 # --- Top-line metrics ---
 det = data["detection"]
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Detection source", det["source"])
+_src = det["source"]
+if _src == "cnn":
+    _src_label = "cnn (trained checkpoint loaded)"
+elif _src == "cnn-no-detection":
+    _src_label = "cnn (no slick above threshold)"
+elif _src == "fallback":
+    _src_label = "fallback (no checkpoint/scene)"
+else:
+    _src_label = _src
+col1.metric("Detection source", _src_label)
 col2.metric("Slick lat", f"{data['slick']['lat']:.3f}")
 col2.caption(f"lon {data['slick']['lon']:.3f}")
 col3.metric("Origin region radius", f"{data['region']['radius_km']:.1f} km")
@@ -115,16 +137,25 @@ m.fit_bounds([[min(all_lats) - pad, min(all_lons) - pad],
 
 st_folium(m, width=700, height=550, returned_objects=[])
 
+st.caption("Geographic bounds shown are for the demo region. Custom uploads use "
+           "approximate bounds for illustration — pixel-to-lat/lon is not GeoTIFF-accurate.")
+
 st.subheader("Ranked suspects")
+
+def _flag(r, true_mmsi):
+    if r["mmsi"] == true_mmsi:
+        return "🔴 TRUE CULPRIT"
+    if r["dark_vessel_flag"]:
+        return "🟠 DARK VESSEL"
+    return "🔵 normal"
 
 df = pd.DataFrame([
     {
         "rank": i + 1,
+        "flag": _flag(r, data["true_mmsi"]),
         "MMSI": r["mmsi"],
         "type": r["vessel_type"],
         "score": r["score"],
-        "dark": "🔴" if r["dark_vessel_flag"] else "",
-        "true?": "✓" if r["mmsi"] == data["true_mmsi"] else "",
     }
     for i, r in enumerate(data["ranked"])
 ])
