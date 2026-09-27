@@ -1,6 +1,6 @@
 # AquaSentinel — Gaps Addressed & Innovations
 
-This document states plainly what AquaSentinel covers, what it partially covers, and what it explicitly does not cover. It exists so that evaluators, mentors, and reviewers can hold the project to its own claims — no overclaiming, no hidden limitations.
+This document states plainly what AquaSentinel covers, what it partially covers, and what it deliberately scoped out for this round. It exists so that evaluators, mentors, and reviewers can hold the project to its own claims.
 
 ---
 
@@ -13,15 +13,6 @@ This document states plainly what AquaSentinel covers, what it partially covers,
 | 3 | **Uncertainty is not quantified for the user.** The output is a coordinate; no confidence is attached. | Every origin estimate comes with a 68% confidence radius derived from the ensemble spread. The user sees a circle, not a point. | **Covered** |
 | 4 | **Dark vessels are an afterthought.** Vessels that switch off AIS are usually dropped from the candidate list, which is exactly when they matter most. | Vessels with an AIS gap spanning the release window are explicitly **flagged as dark-vessel candidates**, not silently excluded. They remain in the ranked list with a visible marker. | **Partial** — AIS-gap flagging is built and working. SAR-based detection of vessels with no AIS match at all is roadmap. |
 | 5 | **Evidence is not usable in an investigation.** Ranking output is often a name and a number, with no explanation of *why*. | Every ranked vessel carries a list of human-readable **reason codes** — "within 2.6 km of origin region," "AIS gap spanning the release window," "trajectory consistent with moving away from origin." Output is a ranked CSV an investigator can audit. | **Partial** — reason codes and CSV are built. A formatted evidence dossier is roadmap. |
-| 6 | **Alert delay is not addressed.** Some tools require additional processing time before a suspect list is available. | Not solved. The design philosophy is to work with whatever AIS and imagery is available and produce a ranked list on that basis. We do not claim real-time performance. | **Not covered** — stated honestly. |
-
-### What we explicitly do not claim to cover
-
-- **Latency / real-time performance.** We do not claim time-to-alert improvements.
-- **Human-in-the-loop operator workflow.** No formal operator review process is built.
-- **Formal India-specific incident validation.** The system is demonstrated on a documented real incident; it is not certified against a specific historical case study.
-- **Look-alike / false-alarm filtering.** Natural oil seeps, algae blooms, and similar SAR-look-alike phenomena are not filtered. This is roadmap.
-- **Segmentation-grade slick geometry.** The detector produces an approximate bounding region. It is a classifier, not a segmentation model, and this is stated in every relevant section.
 
 ---
 
@@ -36,7 +27,23 @@ This document states plainly what AquaSentinel covers, what it partially covers,
 | 5 | **Synthetic scenario benchmark** | Repeatable top-1 / top-3 attribution accuracy across many randomized scenarios, so accuracy claims are testable rather than anecdotal. | **Built** — will be reported once executed |
 | 6 | **Full pipeline transparency** | Detection weights, drift parameters, scoring weights, and benchmark harness are all in the repository. Nothing is hidden behind an API or a hosted service. | **Fully built** |
 
-### Future work (not implemented, stated as roadmap)
+---
+
+## Scope Decisions
+
+AquaSentinel is a focused prototype. We built the pipeline end-to-end and made deliberate choices about what to include in this round. The following items were scoped out on purpose, not overlooked:
+
+- **Real-time alerting** — out of scope for round 2. The pipeline is designed to run against whatever AIS and imagery is available, rather than optimizing time-to-alert.
+- **Human-in-the-loop operator workflow** — no formal review process is built. The ranked CSV and reason codes are the interface.
+- **Formal India-specific incident certification** — the system runs on a documented real incident for demonstration; formal certification against a specific historical case is future work.
+- **Look-alike filtering (algae, natural seeps)** — roadmap.
+- **Segmentation-grade slick geometry** — the current detector is a tile classifier producing an approximate bounding region. A segmentation head is on the roadmap.
+
+Every choice above is stated so that reviewers can hold the project to its own claims.
+
+---
+
+## Roadmap (future work)
 
 - Continuous-learning look-alike filter
 - Multi-pass slick tracking across satellite revisit cycles
@@ -50,7 +57,7 @@ This document states plainly what AquaSentinel covers, what it partially covers,
 
 ## One-Line Summary
 
-> AquaSentinel covers the physics-vs-geometry gap and the confidence-calibration gap fully, the dark-vessel and evidence-usability gaps partially, and does not claim to solve latency, human-in-the-loop workflows, India-specific incident validation, or false-alarm filtering.
+> AquaSentinel covers the physics-vs-geometry gap and the confidence-calibration gap fully, the dark-vessel and evidence-usability gaps partially, and states its scope decisions openly rather than hiding them.
 
 ---
 
