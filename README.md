@@ -4,6 +4,8 @@
 
 A hackathon prototype (SIH26143, round 2) that goes beyond *where is the slick?* to answer *where did it come from, and which vessel most likely caused it?* — with uncertainty quantified and every decision explainable.
 
+> **📋 Full breakdown: [docs/SOLUTION.md](docs/SOLUTION.md)** — gaps addressed, innovations shipped, and scope decisions.
+
 ---
 
 ## What makes this different
