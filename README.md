@@ -30,7 +30,6 @@ A hackathon prototype (SIH26143, round 2) that goes beyond *where is the slick?*
 ```python
 !git clone https://github.com/aditygk19-debug/aquasentinel.git
 %cd aquasentinel
-!`edit 's/pytorch-grad-cam>=1.4/grad-cam>=1.4/' requirements.txt
 !pip install -q -r requirements.txt
 !python run_demo.py
 ```
@@ -92,7 +91,7 @@ aquasentinel/
 - **Parameters:** 4,009,534
 - **Training data:** Zenodo Deep-SAR dataset
 - **Reported tile accuracy:** 99.01%
-- **Explainability:** Grad-CAM was run on the trained model during development to confirm that the detector attends to the dark, smooth regions characteristic of oil slicks rather than to noise. See `docs/SOLUTION.md` for scope.
+- **Explainability:** Grad-CAM heatmaps were generated during development as a qualitative inspection (see the development notebook). They were not used as a validation metric and are not part of the shipped pipeline.
 
 **Checkpoint compatibility note:** the training script saved weights with a `backbone.` prefix on every parameter (the EfficientNet was wrapped in a container module). `detect/detect_model.py::load_model()` strips this prefix before calling `load_state_dict()`. Without this, loading fails silently with 360 missing keys. This is handled transparently — you don't need to do anything.
 

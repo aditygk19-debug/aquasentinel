@@ -26,4 +26,4 @@ Runs `run_pipeline.py` in-process -- the same detection + drift ensemble + AIS a
 
 Ranked candidates, not proof of guilt. AIS feed is synthetic for reproducibility; scoring logic is real.
 
-Not shown: Grad-CAM attention heatmaps (used during model development only).
+Not shown: Grad-CAM heatmaps (used during model development only).
