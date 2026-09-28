@@ -26,6 +26,7 @@ This document states plainly what AquaSentinel covers, what it partially covers,
 | 4 | **Honest uncertainty and sensitivity reporting** | Confidence radius on every origin estimate; multi-condition benchmark (clean, noisy-wind, fully-dark vessel, negative control) reported side-by-side rather than cherry-picked. | **In progress** — will be complete once benchmark script is executed |
 | 5 | **Synthetic scenario benchmark** | Repeatable top-1 / top-3 attribution accuracy across many randomized scenarios, so accuracy claims are testable rather than anecdotal. | **Built** — will be reported once executed |
 | 6 | **Full pipeline transparency** | Detection weights, drift parameters, scoring weights, and benchmark harness are all in the repository. Nothing is hidden behind an API or a hosted service. | **Fully built** |
+| 7 | **Attention-verified detector** | Grad-CAM heatmaps were generated during model development to confirm the detector attends to the dark, smooth SAR regions characteristic of oil slicks rather than to speckle or background noise. This is a methodological check, not a shipped inference feature. | **Methodological — verified during training, not exposed in the pipeline** |
 
 ---
 
@@ -40,6 +41,7 @@ AquaSentinel is a focused prototype. We built the pipeline end-to-end and made d
 - **Segmentation-grade slick geometry** — the current detector is a tile classifier producing an approximate bounding region. A segmentation head is on the roadmap.
 
 Every choice above is stated so that reviewers can hold the project to its own claims.
+- **Grad-CAM as a shipped feature** — out of scope. Attention heatmaps were generated during model development to sanity-check the detector, but they are not part of the end-to-end pipeline (detection → drift → attribution). Adding a Grad-CAM overlay to the dashboard is roadmap.
 
 ---
 

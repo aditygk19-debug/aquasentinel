@@ -92,6 +92,7 @@ aquasentinel/
 - **Parameters:** 4,009,534
 - **Training data:** Zenodo Deep-SAR dataset
 - **Reported tile accuracy:** 99.01%
+- **Explainability:** Grad-CAM was run on the trained model during development to confirm that the detector attends to the dark, smooth regions characteristic of oil slicks rather than to noise. See `docs/SOLUTION.md` for scope.
 
 **Checkpoint compatibility note:** the training script saved weights with a `backbone.` prefix on every parameter (the EfficientNet was wrapped in a container module). `detect/detect_model.py::load_model()` strips this prefix before calling `load_state_dict()`. Without this, loading fails silently with 360 missing keys. This is handled transparently — you don't need to do anything.
 
